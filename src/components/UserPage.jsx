@@ -3,6 +3,8 @@ import Bar from "./Bar";
 import { useNavigate } from "react-router-dom";
 import LabeledInput from "./ui-components/LabeledInput";
 import { JSON_PLACEHOLDER_API_URL } from "../utils/constants";
+import { validateFormData } from "../utils/functions";
+import ErrorBox from "./ui-components/ErrorBox";
 
 const UserPage = ({
   userDetails,
@@ -12,10 +14,12 @@ const UserPage = ({
   newUser,
 }) => {
   const navigate = useNavigate();
-  const [isEditing, setIsEditing] = useState(false); //editing mode on/off
+  const [isEditing, setIsEditing] = useState(false); //editing mode on/off;
+  const [errorMsg, setErrorMsg] = useState(null)
 
   // handling input value changes
   const handleInputChange = (e) => {
+    setErrorMsg(null); //reseting error
     const { name, value } = e.target;
     setUserDetails((prevState) => ({
       ...prevState, // Keeping the previous state
@@ -25,6 +29,7 @@ const UserPage = ({
 
   const handleDelete = async (e) => {
     e.preventDefault();
+    setErrorMsg(null); //reseting error
     e.target.disabled = true;
     e.target.innerHTML = "deleting..";
 
@@ -52,8 +57,17 @@ const UserPage = ({
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setErrorMsg(null); //reseting error
     e.target.disabled = true;
     e.target.innerHTML = "Saving Changes..";
+    const [isValid, errMsg] = validateFormData(userDetails);
+
+    if (!isValid) {
+      setErrorMsg(errMsg)
+      e.target.disabled = false;
+      e.target.innerHTML = "Save Changes";
+      return;
+    }
 
     //handling both cases changing the user details and creating user for the first time
     const method = newUser ? "POST" : "PUT";
@@ -106,6 +120,10 @@ const UserPage = ({
   return (
     <div className="w-full h-fit pt-20">
       <Bar heading="User Details" />
+
+      {errorMsg && <ErrorBox message={errorMsg} />}
+      
+
       {/* Editing bar is not shown in case of creating a new user and the page will open in editing mode in New User Creation*/}
       {!newUser && (
         <div className="p-2 max-w-96 flex justify-between items-center w-full  mx-auto mt-10 bg-slate-300">
@@ -113,8 +131,9 @@ const UserPage = ({
           <button
             className="bg-slate-400 py-1 px-2 hover:bg-slate-200 rounded"
             onClick={() => {
-              //toggles editing mode
-              setIsEditing(!isEditing);
+              setErrorMsg(null) //reseting error
+
+              setIsEditing(!isEditing) //toggles editing mode
             }}
           >
             {!isEditing ? "Edit" : "Cancel"}
