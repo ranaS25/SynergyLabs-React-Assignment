@@ -122,18 +122,17 @@ const UserPage = ({
       <Bar heading="User Details" />
 
       {errorMsg && <ErrorBox message={errorMsg} />}
-      
 
       {/* Editing bar is not shown in case of creating a new user and the page will open in editing mode in New User Creation*/}
       {!newUser && (
-        <div className="p-2 max-w-96 flex justify-between items-center w-full  mx-auto mt-10 bg-slate-300">
+        <div className="p-2 max-w-96 h-fit flex justify-between items-center w-full  mx-auto mt-10 bg-slate-300">
           {isEditing ? "Editing" : "Viewing"}
           <button
             className="bg-slate-400 py-1 px-2 hover:bg-slate-200 rounded"
             onClick={() => {
-              setErrorMsg(null) //reseting error
+              setErrorMsg(null); //reseting error
 
-              setIsEditing(!isEditing) //toggles editing mode
+              setIsEditing(!isEditing); //toggles editing mode
             }}
           >
             {!isEditing ? "Edit" : "Cancel"}
@@ -181,7 +180,7 @@ const UserPage = ({
         {isEditing && (
           <button
             onClick={handleSubmit}
-            className="float-left bg-slate-600 text-slate-100 p-2 rounded disabled:bg-slate-400 disabled:cursor-not-allowed"
+            className="float-left mb-10 bg-slate-600 text-slate-100 p-2 rounded disabled:bg-slate-400 disabled:cursor-not-allowed"
           >
             Save Changes
           </button>
@@ -190,7 +189,7 @@ const UserPage = ({
         {!newUser && (
           <button
             onClick={handleDelete}
-            className="float-right bg-red-600 text-slate-100 p-2 px-4 rounded  "
+            className="float-right  mb-10 bg-red-600 text-slate-100 p-2 px-4 rounded  "
           >
             Delete
           </button>
